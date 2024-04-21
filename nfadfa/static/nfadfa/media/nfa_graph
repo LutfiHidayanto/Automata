@@ -1,0 +1,15 @@
+digraph {
+	0 [label=0 shape=doublecircle]
+	3 [label=3 shape=doublecircle]
+	2 [label=2 shape=circle]
+	1 [label=1 shape=circle]
+	x [label=start shape=none]
+	x -> 0
+	1 -> 1 [label=0]
+	1 -> 1 [label=1]
+	1 -> 2 [label=0]
+	2 -> 3 [label=1]
+	0 -> 1 [label=0]
+	0 -> 2 [label=0]
+	0 -> 1 [label=1]
+}

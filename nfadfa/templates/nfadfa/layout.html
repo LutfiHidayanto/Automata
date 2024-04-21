@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Health{% endblock %}</title>
+    <link href="{% static 'nfadfa/css/styles.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'nfadfa/media/bocchi.png' %}">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'nfa2dfa' %}">NFA to DFA</a></li>
+                <li><a href="#">Regex to e-NFA</a></li>
+                <li><a href="#">Minimize DFA</a></li>
+                <li><a href="#">Equivalent DFA</a></li>
+                <li><a href="#">Test FA</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block body %}
+        {% endblock %}
+    </main>
+</body>
+</html>

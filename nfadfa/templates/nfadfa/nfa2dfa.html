@@ -1,0 +1,83 @@
+{% extends 'nfadfa/layout.html' %}
+{% load static %}
+{% block title %}NFA to DFA Conversion{% endblock %}
+
+{% block body %}
+<section class="conversion-form">
+    <h2>NFA to DFA Conversion</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Convert</button>
+    </form>
+</section>
+
+{% if graph_path %}
+<section class="graph">
+    <h2>ENFA Graph:</h2>
+    <img src="{% static graph_path.enfa %}" alt="ENFA Graph">
+</section>
+    <section class="graph">
+    <h2>NFA Graph:</h2>
+    <img src="{% static graph_path.nfa %}" alt="NFA Graph">
+</section>
+    <section class="graph">
+    <h2>DFA Graph:</h2>
+    <img src="{% static graph_path.dfa %}" alt="DFA Graph">
+</section>
+{% endif %}
+
+{% if nfa %}
+<section class="conversion-result">
+    <h2>Original NFA:</h2>
+    <p>Number of states: {{ nfa.num_states }}</p>
+    <p>States: {% for state in nfa.states %}{{ state }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <p>Symbols: {{ nfa.symbols }}</p>
+    <p>Number of final states: {{ nfa.num_final_states }}</p>
+    <p>Final states: {{ nfa.final_state }}</p>
+    <p>Start state: {{ nfa.start_state }}</p>
+    <h3>Transition functions:</h3>
+    <ul>
+        {% for transition in nfa.transition_functions %}
+            <li>{{ transition }}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+
+{% if nfa %}
+<section class="conversion-result">
+    <h2>Original NFA:</h2>
+    <p>Number of states: {{ nfa.num_states }}</p>
+    <p>States: {% for state in nfa.states %}{{ state }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <p>Symbols: {{ nfa.symbols }}</p>
+    <p>Number of final states: {{ nfa.num_final_states }}</p>
+    <p>Final states: {{ nfa.final_state }}</p>
+    <p>Start state: {{ nfa.start_state }}</p>
+    <h3>Transition functions:</h3>
+    <ul>
+        {% for transition in nfa.transition_functions %}
+            <li>{{ transition }}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+{% if dfa %}
+<section class="conversion-result">
+    <h2>Converted DFA:</h2>
+    <p>Number of states: {{ dfa.num_states }}</p>
+    <p>Symbols: {{ dfa.symbols }}</p>
+    <p>Number of final states: {{ dfa.num_final_states }}</p>
+    <p>Final states: {{ dfa.final_state }}</p>
+    <p>Start state: {{ dfa.start_state }}</p>
+    <h3>Transition functions:</h3>
+    <ul>
+        {% for transition in dfa.transition_functions %}
+            <li>{{ transition }}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+{% endblock %}
