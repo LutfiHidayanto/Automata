@@ -30,7 +30,11 @@
                         {% endfor %}
                     {% else %}
                         {% for column in row %}
-                            <td> {{ column|join:", " }} </td>
+                            {% if forloop.counter0 == 0 %}
+                                <td>{{ column }}</td>
+                            {% else %}
+                                <td>{{ column|join:", " }}</td>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </tr>
@@ -54,7 +58,11 @@
                         {% endfor %}
                     {% else %}
                         {% for column in row %}
-                            <td> {{ column|join:", " }} </td>
+                            {% if forloop.counter0 == 0 %}
+                                <td>{{ column }}</td>
+                            {% else %}
+                                <td>{{ column|join:", " }}</td>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </tr>
@@ -78,7 +86,11 @@
                         {% endfor %}
                     {% else %}
                         {% for column in row %}
-                            <td> {{ column|join:", " }} </td>
+                            {% if forloop.counter0 == 0 %}
+                                <td>{{ column }}</td>
+                            {% else %}
+                                <td>{{ column|join:", " }}</td>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </tr>

@@ -31,7 +31,11 @@
                         {% endfor %}
                     {% else %}
                         {% for column in row %}
-                            <td> {{ column }} </td>
+                            {% if forloop.counter0 == 0 %}
+                                <td>{{ column }}</td>
+                            {% else %}
+                                <td>{{ column|join:", " }}</td>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </tr>
@@ -40,5 +44,12 @@
     </div>
 </section>
 {% endif %}
+
+{% if error_message %}
+    <script>
+        alert("{{ error_message }}");
+    </script>
+{% endif %}
+
 
 {% endblock %}

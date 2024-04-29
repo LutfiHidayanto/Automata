@@ -1,0 +1,75 @@
+{% extends 'nfadfa/layout.html' %}
+{% load static %}
+{% block title %}Equivalent DFA{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>DFA 1</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form1.as_p }}
+        <h1>DFA 2</h1>
+        {{ form2.as_p }}
+        <button type="submit">Submit DFA</button>
+    </form>
+</div>
+
+
+{% if graph_path %}
+    {% if equivalent %}
+        <h2>Equivalent</h2>
+    {% else %}
+        <h2>Not Equivalent</h2>
+    {% endif %}
+<section class="result">
+    <div class="graph">
+        <h2>DFA 1</h2>
+        <img src="{% static graph_path.1 %}" alt="DFA 1">
+    </div>
+{#    <div class="transition-table">#}
+{#        <h2>ENFA Transition Table: </h2>#}
+{#        <table>#}
+{#            {% for row in transition_table %}#}
+{#                <tr>#}
+{#                    {% if forloop.counter0 == 0 %}#}
+{#                        {% for column in row %}#}
+{#                            <th> {{ column }} </th>#}
+{#                        {% endfor %}#}
+{#                    {% else %}#}
+{#                        {% for column in row %}#}
+{#                            <td> {{ column }} </td>#}
+{#                        {% endfor %}#}
+{#                    {% endif %}#}
+{#                </tr>#}
+{#            {% endfor %}#}
+{#        </table>#}
+{#    </div>#}
+</section>
+
+<section class="result">
+    <div class="graph">
+        <h2>DFA 2</h2>
+        <img src="{% static graph_path.2 %}" alt="DFA 2">
+    </div>
+{#    <div class="transition-table">#}
+{#        <h2>ENFA Transition Table: </h2>#}
+{#        <table>#}
+{#            {% for row in transition_table %}#}
+{#                <tr>#}
+{#                    {% if forloop.counter0 == 0 %}#}
+{#                        {% for column in row %}#}
+{#                            <th> {{ column }} </th>#}
+{#                        {% endfor %}#}
+{#                    {% else %}#}
+{#                        {% for column in row %}#}
+{#                            <td> {{ column }} </td>#}
+{#                        {% endfor %}#}
+{#                    {% endif %}#}
+{#                </tr>#}
+{#            {% endfor %}#}
+{#        </table>#}
+{#    </div>#}
+</section>
+{% endif %}
+
+{% endblock %}

@@ -1,17 +1,18 @@
 import graphviz
 
+
 class DFA:
-    def __init__(self, states, alphabet, transitions, start, finals):
+    def __init__(self, states, alphabet, transitions, starting_state, accepting_states):
         self.states = states
         self.alphabet = alphabet
         self.transitions = transitions
-        self.start = start
-        self.finals = finals
+        self.starting_state = starting_state
+        self.accepting_states = accepting_states
 
-    def is_accept(self, state):
-        return state in self.finals
+    def is_accepting(self, state):
+        return state in self.accepting_states
 
-    def next_state(self, state, symbol):
+    def transition(self, state, symbol):
         if (state, symbol) in self.transitions:
             return self.transitions[(state, symbol)]
         else:
@@ -20,35 +21,35 @@ class DFA:
     def minimize(self):
         from collections import defaultdict
 
-        partition = [self.finals, self.states - self.finals]
+        partition = [self.accepting_states, self.states - self.accepting_states]
         changed = True
         while changed:
             changed = False
             new_partition = []
             for part in partition:
-                split = defaultdict(list)
+                split_dict = defaultdict(list)
                 for state in part:
-                    transition_key = tuple(self.next_state(state, symbol) for symbol in self.alphabet)
-                    split[transition_key].append(state)
-                if len(split) > 1:
+                    transition_key = tuple(self.transition(state, symbol) for symbol in self.alphabet)
+                    split_dict[transition_key].append(state)
+                if len(split_dict) > 1:
                     changed = True
-                    new_partition.extend(split.values())
+                    new_partition.extend(split_dict.values())
                 else:
                     new_partition.append(part)
             partition = new_partition
 
         state_map = {}
         minimized_states = set()
-        minimized_finals = set()
+        minimized_accepting_states = set()
         minimized_transitions = {}
 
         for part in partition:
-            rep = next(iter(part))
-            minimized_states.add(rep)
-            if rep in self.finals:
-                minimized_finals.add(rep)
+            representative = next(iter(part))
+            minimized_states.add(representative)
+            if representative in self.accepting_states:
+                minimized_accepting_states.add(representative)
             for state in part:
-                state_map[state] = rep
+                state_map[state] = representative
 
         for (state, symbol), next_state in self.transitions.items():
             new_state = state_map[state]
@@ -57,27 +58,28 @@ class DFA:
 
         self.states = minimized_states
         self.transitions = minimized_transitions
-        self.finals = minimized_finals
-        self.start = state_map[self.start]
+        self.accepting_states = minimized_accepting_states
+        self.starting_state = state_map[self.starting_state]
 
-    def run(self, input_str):
-        current = self.start
+    def simulate(self, input_string):
+        current_state = self.starting_state
 
-        for symbol in input_str:
-            current = self.next_state(current, symbol)
-            if current is None:
+        for symbol in input_string:
+            current_state = self.transition(current_state, symbol)
+            if current_state is None:
                 return False
 
-        return self.is_accept(current)
+        return self.is_accepting(current_state)
 
     def __str__(self):
-        return f"States: {self.states}\nAlphabet: {self.alphabet}\nTransitions: {self.transitions}\nStart State: {self.start}\nAccept States: {self.finals}"
+        return f"States: {self.states}\nAlphabet: {self.alphabet}\nTransitions: {self.transitions}\nStart State: {self.starting_state}\nAccept States: {self.accepting_states}"
 
-def get_dfa():
+
+def get_dfa_from_user():
     states = input("Enter states (comma-separated): ").split(',')
     alphabet = input("Enter alphabet (comma-separated): ").split(',')
-    start = input("Enter start state: ")
-    finals = input("Enter accept states (comma-separated): ").split(',')
+    starting_state = input("Enter start state: ")
+    accepting_states = input("Enter accept states (comma-separated): ").split(',')
 
     transitions = {}
     print("Enter transitions (format: state, symbol, next_state). Type 'done' to finish.")
@@ -88,45 +90,52 @@ def get_dfa():
         state, symbol, next_state = transition_input.split(',')
         transitions[(state.strip(), symbol.strip())] = next_state.strip()
 
-    return DFA(set(states), set(alphabet), transitions, start, set(finals))
+    return DFA(set(states), set(alphabet), transitions, starting_state, set(accepting_states))
 
-def visualize(states, alphabet, transitions, start, finals, name):
+
+def visualize_dfa(states, alphabet, transitions, starting_state, accepting_states, name):
+    # Membuat digraph objek
     dot = graphviz.Digraph()
 
     dot.attr(rankdir='LR')
     dot.attr('node', shape='circle')
 
+    # Menambah node
     for state in states:
-        if state in finals:
-            dot.node(state, shape='doublecircle')
+        if state in accepting_states:
+            dot.node(state, shape='doublecircle', style='filled', fillcolor='lightblue', color='lightblue')
         else:
-            dot.node(state)
+            dot.node(state, style='filled', fillcolor='pink', color='pink')
 
+    # Menambah start node
     dot.node('start', shape='point')
-    dot.edge('start', start)
+    dot.edge('start', starting_state)
 
+    # Tambah transisi
     for transition in transitions:
         from_state, symbol = transition
         to_state = transitions[transition]
         dot.edge(from_state, to_state, label=symbol)
 
+    # render
     dot.render(name, format='png', view=True)
 
+
 # def main():
-#     dfa = get_dfa()
-#     input_str = input("\nEnter string to test: ")
+#     dfa = get_dfa_from_user()
+#     input_string = input("\nEnter string to test: ")
 #
-#     print(input_str)
 #     print("\nDFA before minimization:")
-#     print("Test result:", "Accepted" if dfa.run(input_str) else "Rejected")
+#     print("Test result:", "Accepted" if dfa.simulate(input_string) else "Rejected")
 #     print(dfa)
-#     visualize(dfa.states, dfa.alphabet, dfa.transitions, dfa.start, dfa.finals, 'dfa1')
+#     visualize_dfa(dfa.states, dfa.alphabet, dfa.transitions, dfa.starting_state, dfa.accepting_states, 'dfa1')
 #
-#     dfa.minimize()
+#     dfa.minimize()  # Panggil fungsi minimize di sini
 #
 #     print("\nDFA after minimization:")
-#     print("Test result:", "Accepted" if dfa.run(input_str) else "Rejected")
-#     visualize(dfa.states, dfa.alphabet, dfa.transitions, dfa.start, dfa.finals, 'dfa2')
+#     print("Test result:", "Accepted" if dfa.simulate(input_string) else "Rejected")
+#     visualize_dfa(dfa.states, dfa.alphabet, dfa.transitions, dfa.starting_state, dfa.accepting_states, 'dfa2')
+#
 #
 # if __name__ == "__main__":
 #     main()

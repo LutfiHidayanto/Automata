@@ -1,18 +1,15 @@
 digraph {
 	rankdir=LR
 	node [shape=circle]
-	B [shape=doublecircle]
-	D
-	C [shape=doublecircle]
-	A
+	q0 [color=pink fillcolor=pink style=filled]
+	q1 [color=pink fillcolor=pink style=filled]
+	q3 [color=lightblue fillcolor=lightblue shape=doublecircle style=filled]
 	start [shape=point]
-	start -> A
-	A -> B [label=0]
-	A -> C [label=1]
-	B -> D [label=0]
-	B -> C [label=1]
-	C -> A [label=0]
-	C -> D [label=1]
-	D -> D [label=0]
-	D -> D [label=1]
+	start -> q0
+	q0 -> q1 [label=a]
+	q0 -> q1 [label=b]
+	q1 -> q3 [label=a]
+	q1 -> q3 [label=b]
+	q3 -> q3 [label=a]
+	q3 -> q3 [label=b]
 }

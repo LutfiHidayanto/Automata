@@ -6,6 +6,12 @@ os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 EPSILON = 'ε'
 EMPTY = '-'
 
+import re
+def contains_non_numeric(string):
+    pattern = r'\D'
+    match = re.search(pattern, string)
+    return bool(match)
+
 
 class FA:
     def __init__(self):
@@ -124,7 +130,7 @@ class NFA(FA):
             transition_symbol = transition_func_line[1]
             ending_state = int(transition_func_line[2])
 
-            transition_function = (starting_state, transition_symbol, ending_state);
+            transition_function = (starting_state, transition_symbol, ending_state)
             self.transition_functions.append(transition_function)
 
 
@@ -203,12 +209,23 @@ class ENFA(FA):
         if visited is None:
             visited = set()
 
-        next_state = self.get_next_states(state, EPSILON)
+        epsilon_closure = []
 
-        if next_state == []:
-            return None
-        else:
-            return next_state
+        # Add the current state to visited set
+        visited.add(state)
+
+        # Get next states with epsilon transition
+        epsilon_next_states = self.get_next_states(state, EPSILON)
+
+        # Add current state to epsilon closure
+        epsilon_closure.append(state)
+
+        # Recursively get epsilon closure for next states
+        for next_state in epsilon_next_states:
+            if next_state not in visited:
+                epsilon_closure.extend(self.get_epsilon_closure(next_state, visited))
+
+        return epsilon_closure
 
     def convert_to_nfa(self):
         symbol_without_epsilon = self.symbols[:-1].copy()
@@ -271,7 +288,15 @@ class ENFA(FA):
             if state not in self.states:
                 nfa.states.remove(state)
 
+        nfa.states = sorted(nfa.states)
         nfa.num_states = len(nfa.states)
+
+        non_duplicated_final = []
+        for state in nfa.final_state:
+            if state not in non_duplicated_final:
+                non_duplicated_final.append(state)
+
+        nfa.final_state = non_duplicated_final
 
         print(f"nfa states: {nfa.states}")
 
@@ -303,16 +328,47 @@ class DFA(FA):
         for transition in sorted(self.transition_functions):
             print(" ".join(str(value) for value in transition))
 
+    def encode_decode_states(self, states):
+        original_to_numbers = dict()
+        numbers_to_original = dict()
+        for i, state in enumerate(states):
+            original_to_numbers[state] = str(i)
+            numbers_to_original[str(i)] = state
+
+        return original_to_numbers, numbers_to_original
+
+
     def convert_from_nfa(self, nfa):
+        original_2_numbers, numbers_2_originals = self.encode_decode_states(nfa.states)
+
         self.symbols = nfa.symbols.copy()
-        self.start_state = nfa.start_state
-        self.states = nfa.states.copy()
+        self.start_state = original_2_numbers[nfa.start_state]
+        states = nfa.states.copy()
+
+        for state in states:
+            state_n = original_2_numbers[state]
+            self.states.add(state_n)
+
+        for state in nfa.final_state:
+            state_n = original_2_numbers[state]
+            self.final_state.append(state_n)
+
+        print(f"Final state: {self.final_state}")
+        number_transition_functions = []
+        for transition in nfa.transition_functions:
+            state = transition[0]
+            symbol = transition[1]
+            next_state = transition[2]
+            state_o = original_2_numbers[state]
+            next_state_o = original_2_numbers[next_state]
+
+            number_transition_functions.append((state_o, symbol, next_state_o))
 
         nfa_transition_dict = {}
         dfa_transition_dict = {}
 
         # Combine NFA transitions
-        for transition in nfa.transition_functions:
+        for transition in number_transition_functions:
             starting_state = transition[0]
             transition_symbol = transition[1]
             ending_state = transition[2]
@@ -322,7 +378,7 @@ class DFA(FA):
             else:
                 nfa_transition_dict[(starting_state, transition_symbol)] = [ending_state]
 
-        self.q.append(('0',))
+        self.q.append((self.start_state,))
 
         # Convert NFA transitions to DFA transitions
         for dfa_state in self.q:
@@ -367,3 +423,199 @@ class DFA(FA):
                 if state in q_state:
                     self.final_state.append(str(self.q.index(q_state)))
                     self.num_final_states += 1
+
+        # decode
+
+        # decode transitions and states
+        new_transition_functions = []
+        new_states = set()
+        for transition in self.transition_functions:
+            state = transition[0]
+            symbol = transition[1]
+            next_state = transition[2]
+            state_o = numbers_2_originals[state]
+            next_state_o = numbers_2_originals[next_state]
+
+            new_transition_functions.append((state_o, symbol, next_state_o))
+            new_states.add(state_o)
+            new_states.add(next_state_o)
+
+        self.transition_functions = new_transition_functions
+        self.states = new_states
+        # decode final state
+        new_final_states = list()
+        for state in self.final_state:
+            state_o = numbers_2_originals[state]
+
+            new_final_states.append(state_o)
+
+        self.final_state = new_final_states
+
+        self.start_state = numbers_2_originals[self.start_state]
+
+
+    def convert_from_nfa_numbers(self, nfa):
+        self.symbols = nfa.symbols.copy()
+        self.start_state = nfa.start_state
+        self.states = nfa.states.copy()
+
+        nfa_transition_dict = {}
+        dfa_transition_dict = {}
+
+        # Combine NFA transitions
+        for transition in nfa.transition_functions:
+            starting_state = transition[0]
+            transition_symbol = transition[1]
+            ending_state = transition[2]
+
+            if (starting_state, transition_symbol) in nfa_transition_dict:
+                nfa_transition_dict[(starting_state, transition_symbol)].append(ending_state)
+            else:
+                nfa_transition_dict[(starting_state, transition_symbol)] = [ending_state]
+
+        self.q.append((self.start_state,))
+
+        # Convert NFA transitions to DFA transitions
+        for dfa_state in self.q:
+            for symbol in nfa.symbols:
+                if len(dfa_state) == 1 and (dfa_state[0], symbol) in nfa_transition_dict:
+                    dfa_transition_dict[(dfa_state, symbol)] = nfa_transition_dict[(dfa_state[0], symbol)]
+
+                    if tuple(dfa_transition_dict[(dfa_state, symbol)]) not in self.q:
+                        self.q.append(tuple(dfa_transition_dict[(dfa_state, symbol)]))
+                else:
+                    destinations = []
+                    final_destination = []
+
+                    for nfa_state in dfa_state:
+                        if (nfa_state, symbol) in nfa_transition_dict and nfa_transition_dict[
+                            (nfa_state, symbol)] not in destinations:
+                            destinations.append(nfa_transition_dict[(nfa_state, symbol)])
+
+                    if not destinations:
+                        final_destination.append(None)
+                    else:
+                        for destination in destinations:
+                            for value in destination:
+                                if value not in final_destination:
+                                    final_destination.append(value)
+
+                    dfa_transition_dict[(dfa_state, symbol)] = final_destination
+
+                    if tuple(final_destination) not in self.q:
+                        self.q.append(tuple(final_destination))
+
+        # Convert NFA states to DFA states
+        for key in dfa_transition_dict:
+            self.transition_functions.append(
+                (str(self.q.index(tuple(key[0]))), key[1], str(self.q.index(tuple(dfa_transition_dict[key])))))
+            # changed
+            self.states.add(str(self.q.index(tuple(key[0]))))
+            self.states.add(str(self.q.index(tuple(dfa_transition_dict[key]))))
+
+        for q_state in self.q:
+            for state in nfa.final_state:
+                if state in q_state:
+                    self.final_state.append(str(self.q.index(q_state)))
+                    self.num_final_states += 1
+
+
+
+    # def convert_from_nfa(self, nfa):
+    #     self.symbols = nfa.symbols.copy()
+    #     self.start_state = nfa.start_state
+    #     self.states = nfa.states.copy()
+    #
+    #     nfa_transition_dict = {}
+    #     dfa_transition_dict = {}
+    #
+    #     # Combine NFA transitions
+    #     for transition in nfa.transition_functions:
+    #         starting_state = transition[0]
+    #         transition_symbol = transition[1]
+    #         ending_state = transition[2]
+    #
+    #         if (starting_state, transition_symbol) in nfa_transition_dict:
+    #             nfa_transition_dict[(starting_state, transition_symbol)].append(ending_state)
+    #         else:
+    #             nfa_transition_dict[(starting_state, transition_symbol)] = [ending_state]
+    #
+    #     self.q.append((self.start_state,))
+    #
+    #     # Convert NFA transitions to DFA transitions
+    #     for dfa_state in self.q:
+    #         for symbol in nfa.symbols:
+    #             if len(dfa_state) == 1 and (dfa_state[0], symbol) in nfa_transition_dict:
+    #                 dfa_transition_dict[(dfa_state, symbol)] = nfa_transition_dict[(dfa_state[0], symbol)]
+    #
+    #                 if tuple(dfa_transition_dict[(dfa_state, symbol)]) not in self.q:
+    #                     self.q.append(tuple(dfa_transition_dict[(dfa_state, symbol)]))
+    #             else:
+    #                 destinations = []
+    #                 final_destination = []
+    #
+    #                 for nfa_state in dfa_state:
+    #                     if (nfa_state, symbol) in nfa_transition_dict and nfa_transition_dict[
+    #                         (nfa_state, symbol)] not in destinations:
+    #                         destinations.append(nfa_transition_dict[(nfa_state, symbol)])
+    #
+    #                 if not destinations:
+    #                     final_destination.append(None)
+    #                 else:
+    #                     for destination in destinations:
+    #                         for value in destination:
+    #                             if value not in final_destination:
+    #                                 final_destination.append(value)
+    #
+    #                 dfa_transition_dict[(dfa_state, symbol)] = final_destination
+    #
+    #                 if tuple(final_destination) not in self.q:
+    #                     self.q.append(tuple(final_destination))
+    #
+    #     # Convert NFA states to DFA states
+    #     for key in dfa_transition_dict:
+    #         dfa_state_index = self.q.index(tuple(key[0]))
+    #         next_state_index = self.q.index(tuple(dfa_transition_dict[key]))
+    #
+    #         self.transition_functions.append(
+    #             (str(dfa_state_index), key[1], str(next_state_index)))
+    #
+    #         self.states.add(str(dfa_state_index))
+    #         self.states.add(str(next_state_index))
+    #
+    #     for q_state in self.q:
+    #         for state in nfa.final_state:
+    #             if state in q_state:
+    #                 self.final_state.append(str(self.q.index(q_state)))
+    #                 self.num_final_states += 1
+    #
+    #
+    #     # decode
+    #     original_2_numbers, numbers_2_originals = self.encode_decode_states(nfa.states)
+    #
+    #     # decode transitions and states
+    #     new_transition_functions = []
+    #     new_states = set()
+    #     for transition in self.transition_functions:
+    #         state = transition[0]
+    #         symbol = transition[1]
+    #         next_state = transition[2]
+    #         state_o = numbers_2_originals[state]
+    #         next_state_o = numbers_2_originals[next_state]
+    #
+    #         new_transition_functions.append((state_o, symbol, next_state_o))
+    #         new_states.add(state_o)
+    #         new_states.add(next_state_o)
+    #
+    #     self.transition_functions = new_transition_functions
+    #     self.states = new_states
+    #     # decode final state
+    #     new_final_states = list()
+    #     for state in self.final_state:
+    #         state_o = numbers_2_originals[state]
+    #
+    #         new_final_states.append(state_o)
+    #
+    #     self.final_state = new_final_states
+
+

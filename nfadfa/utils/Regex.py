@@ -15,6 +15,8 @@ class ExpressionTree:
         self.left = None
         self.right = None
 
+    def __str__(self):
+        return str(self.value, self._type), str(self.left), str(self.right)
 
 def constructTree(regexp):
     stack = []
@@ -164,7 +166,7 @@ def visualizeTransition(finite_automata, filename='E-NFA_transition_graph'):
     states_done = []
     symbol_table = {finite_automata[0]: 'q0'}  # Menyimpan mapping antara state dengan label 'q' + nomor state
     dot.attr(rankdir='LR')  # Menyetel tata letak mendatar (left to right)
-    dot.node('q0', shape='circle')  # Menandai start state sebagai circle biasa
+    dot.node('q0', shape='circle', style='filled', fillcolor='lightblue', color='lightblue')  # Menandai start state sebagai circle biasa
     stack = [finite_automata[0]]
 
     while stack:
@@ -175,7 +177,10 @@ def visualizeTransition(finite_automata, filename='E-NFA_transition_graph'):
                 for ns in state.next_state[symbol]:
                     if ns not in symbol_table:
                         symbol_table[ns] = 'q' + str(len(symbol_table))
-                    dot.node(symbol_table[ns], shape='doublecircle' if ns == finite_automata[1] else 'circle')
+                    if ns == finite_automata[1]:
+                        dot.node(symbol_table[ns], shape='doublecircle', style='filled', fillcolor='pink', color='pink')
+                    else:
+                        dot.node(symbol_table[ns], shape='circle', style='filled', fillcolor='lightblue', color='lightblue')
                     dot.edge(symbol_table[state], symbol_table[ns], label=symbol)
                     if ns not in states_done:
                         stack.append(ns)
@@ -230,7 +235,14 @@ def validateRegexInput(regex):
     return True
 
 
-def getStateTransitions(state, states_done, symbol_table, transitions=[]):
+def getStateTransitions(state, states_done=None, symbol_table=None, transitions=None):
+    if states_done is None:
+        states_done = []
+    if symbol_table is None:
+        symbol_table = {}
+    if transitions is None:
+        transitions = []
+
     if state in states_done:
         return transitions
 

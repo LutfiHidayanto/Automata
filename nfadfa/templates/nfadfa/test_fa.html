@@ -5,43 +5,69 @@
 {% block body %}
 <h1>Test Finite Automata</h1>
 
-<div class="container">
-<a href="{% url 'test_fa_details' name="DFA" %}">
-    <h2>DFA</h2>
-    <i class="fa fa-cogs"></i>
-    <button onclick="selectOption('dfa')">Select DFA</button>
-</a>
-</div>
+{#<div class="container">#}
+{#<a href="{% url 'test_fa_details' name="DFA" %}">#}
+{#    <h2>DFA</h2>#}
+{#    <i class="fa fa-cogs"></i>#}
+{#    <button onclick="selectOption('dfa')">Select DFA</button>#}
+{#</a>#}
+{#</div>#}
 
-<div class="container">
-<a href="{% url 'test_fa_details' name="NFA" %}">
-    <h2>NFA</h2>
-    <i class="fa fa-exchange"></i>
-    <button onclick="selectOption('nfa')">Select NFA</button>
-</a>
+{#<div class="container">#}
+{#<a href="{% url 'test_fa_details' name="NFA" %}">#}
+{#    <h2>NFA</h2>#}
+{#    <i class="fa fa-exchange"></i>#}
+{#    <button onclick="selectOption('nfa')">Select NFA</button>#}
+{#</a>#}
+{#</div>#}
+{##}
+{#<div class="container">#}
+{#<a href="{% url 'test_fa_details' name="E-NFA" %}">#}
+{#    <h2>E-NFA</h2>#}
+{#    <i class="fa fa-random"></i>#}
+{#    <button onclick="selectOption('enfa')">Select E-NFA</button>#}
+{#</a>#}
+{#</div>#}
+{##}
+{#<div class="container">#}
+{#<a href="{% url 'test_fa_details' name="Regex" %}">#}
+{#    <h2>Regex</h2>#}
+{#    <i class="fa fa-asterisk"></i>#}
+{#    <button onclick="selectOption('regex')">Select Regex</button>#}
+{#</a>#}
+{#</div>#}
+{##}
+{#<form id="fa-type-form" style="display: none;">#}
+{#    {% csrf_token %}#}
+{#    <input type="hidden" name="fa_type" id="fa-type-input">#}
+{#    <input type="submit" value="Submit">#}
+{#</form>#}
+<div class="features">
+    <div class="feature">
+        <a href="{% url 'test_fa_details' name="DFA" %}">
+            <i class="fa fa-cogs"></i>
+            <h2>DFA</h2>
+        </a>
+    </div>
+    <div class="feature">
+        <a href="{% url 'test_fa_details' name="NFA" %}">
+            <i class="fa fa-exchange"></i>
+            <h2>NFA</h2>
+        </a>
+    </div>
+    <div class="feature">
+        <a href="{% url 'test_fa_details' name="E-NFA" %}">
+            <i class="fa fa-random"></i>
+            <h2>E-NFA</h2>
+        </a>
+    </div>
+    <div class="feature">
+        <a href="{% url 'test_fa_details' name="Regex" %}">
+            <i class="fa fa-asterisk"></i>
+            <h2>Regex</h2>
+        </a>
+    </div>
 </div>
-
-<div class="container">
-<a href="{% url 'test_fa_details' name="E-NFA" %}">
-    <h2>E-NFA</h2>
-    <i class="fa fa-random"></i>
-    <button onclick="selectOption('enfa')">Select E-NFA</button>
-</a>
-</div>
-
-<div class="container">
-<a href="{% url 'test_fa_details' name="Regex" %}">
-    <h2>Regex</h2>
-    <i class="fa fa-asterisk"></i>
-    <button onclick="selectOption('regex')">Select Regex</button>
-</a>
-</div>
-
-<form id="fa-type-form" style="display: none;">
-    {% csrf_token %}
-    <input type="hidden" name="fa_type" id="fa-type-input">
-    <input type="submit" value="Submit">
-</form>
 
 <script>
     function selectOption(option) {
