@@ -6,35 +6,68 @@
     <div class="hero-content">
         <h1>Welcome to the FA Toolbox</h1>
         <p>Your one-stop destination for finite automata operations.</p>
-        <a href="#" class="btn">Get Started</a>
+
+        <div id="made-by">
+            <p>Made by : </p>
+            <ol>
+                <li>Deva Athaya Gay</li>
+                <li>Elviztod Juan K</li>
+                <li>Fathin Achmad</li>
+                <li>Hajid Lutfi Hidayanto</li>
+                <li>Irfan Adi Prasetya</li>
+                <li>Hajid Lutfi Hidayanto</li>
+            </ol>
+        </div>
+
+        <a href="#features" class="btn" id="get-started-btn">Get Started</a>
     </div>
 </section>
 
-<section class="features">
+<section class="features" id="features">
     <div class="feature">
-        <i class="fa fa-cogs"></i>
-        <h2>NFA to DFA</h2>
-        <p>Convert your Non-Deterministic Finite Automata to Deterministic Finite Automata effortlessly.</p>
+        <a href="{% url 'nfa2dfa' %}">
+            <i class="fa fa-cogs"></i>
+            <h2>NFA to DFA</h2>
+            <p>Convert your Non-Deterministic Finite Automata to Deterministic Finite Automata effortlessly.</p>
+        </a>
     </div>
     <div class="feature">
-        <i class="fa fa-random"></i>
-        <h2>Regex to e-NFA</h2>
-        <p>Transform Regular Expressions into equivalent Non-Deterministic Finite Automata.</p>
+        <a href="{% url 'regex_to_enfa' %}">
+            <i class="fa fa-random"></i>
+            <h2>Regex to e-NFA</h2>
+            <p>Transform Regular Expressions into equivalent Non-Deterministic Finite Automata.</p>
+        </a>
     </div>
     <div class="feature">
-        <i class="fa fa-compress"></i>
-        <h2>Minimize DFA</h2>
-        <p>Reduce the size of your Deterministic Finite Automata while preserving its functionality.</p>
+        <a href="{% url 'minimize_dfa' %}">
+            <i class="fa fa-compress"></i>
+            <h2>Minimize DFA</h2>
+            <p>Reduce the size of your Deterministic Finite Automata while preserving its functionality.</p>
+        </a>
     </div>
     <div class="feature">
-        <i class="fa fa-exchange"></i>
-        <h2>Equivalent DFA</h2>
-        <p>Check if two Deterministic Finite Automata are equivalent or not.</p>
+        <a>
+            <i class="fa fa-exchange"></i>
+            <h2>Equivalent DFA</h2>
+            <p>Check if two Deterministic Finite Automata are equivalent or not.</p>
+        </a>
     </div>
     <div class="feature">
-        <i class="fa fa-check"></i>
-        <h2>Test FA</h2>
-        <p>Test your Finite Automata with custom inputs to verify their behavior.</p>
+        <a href="{% url 'test_fa' %}">
+            <i class="fa fa-check"></i>
+            <h2>Test FA</h2>
+            <p>Test your Finite Automata with custom inputs to verify their behavior.</p>
+        </a>
     </div>
 </section>
+
+<script>
+    document.getElementById('get-started-btn').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        document.getElementById('features').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+</script>
 {% endblock %}

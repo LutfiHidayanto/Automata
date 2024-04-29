@@ -1,8 +1,8 @@
 digraph {
-	0 [label=0 shape=doublecircle]
-	3 [label=3 shape=doublecircle]
-	2 [label=2 shape=circle]
-	1 [label=1 shape=circle]
+	1 [label=1 color=pink fillcolor=pink shape=circle style=filled]
+	0 [label=0 color=lightblue fillcolor=lightblue shape=doublecircle style=filled]
+	2 [label=2 color=pink fillcolor=pink shape=circle style=filled]
+	3 [label=3 color=lightblue fillcolor=lightblue shape=doublecircle style=filled]
 	x [label=start shape=none]
 	x -> 0
 	0 -> 1 [label=0]

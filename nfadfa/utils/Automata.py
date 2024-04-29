@@ -3,7 +3,8 @@ import os
 
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 
-EPSILON = 'e'
+EPSILON = 'ε'
+EMPTY = '-'
 
 
 class FA:
@@ -16,7 +17,9 @@ class FA:
         self.transition_functions = []
         self.states = set()
         self.graph = Digraph(format="png")
-        self.transitions_table = []
+
+        self.transition_dict = {}
+
 
     def initFa(self, states, start_state, final_state, symbols, transition_functions):
         self.states = states
@@ -27,18 +30,36 @@ class FA:
         self.symbols = symbols
         self.transition_functions = transition_functions
 
-    def create_transitions_table(self):
-        self.transitions_table = [[EMPTY for _ in range(len(self.symbols))] for _ in range(self.num_states)]
-        for transition in self.transition_functions:
-            start_node = self.getIndex(transition[0])
-            end_node = self.getIndex(transition[1])
-            label = self.symbolToIndex[transition[2]]
 
-            # adding into transitions table
-            if self.transitions_table[start_node][label] == EMPTY:
-                self.transitions_table[start_node][label] = self.getState(end_node)
+    def init_transitions(self):
+        for transition in self.transition_functions:
+            start_state = transition[0]
+            symbol = transition[1]
+            ending_state = transition[2]
+
+            if (start_state, symbol) in self.transition_dict:
+                self.transition_dict[(start_state, symbol)].append(ending_state)
             else:
-                self.transitions_table[start_node][label] += (',' + self.getState(end_node))
+                self.transition_dict[(start_state, symbol)] = [ending_state]
+
+    def create_transition_table(self):
+        table = []
+        states = sorted(self.states)
+        symbols = sorted(self.symbols)
+
+        # Construct header row
+        header = ["State"] + symbols
+        table.append(header)
+
+        # Construct transition rows
+        for state in states:
+            row = [state]
+            for symbol in symbols:
+                next_state = self.transition_dict.get((state, symbol), '-')
+                row.append(next_state)
+            table.append(row)
+
+        return table
 
     def init_states(self):
         self.states = set(range(self.num_states))
@@ -51,15 +72,14 @@ class FA:
         print(f"Final states: {self.final_state}")
         print(f"Start state: {self.start_state}")
         print(f"Transitions: {self.transition_functions}")
-        print(f"Transition table: {self.transitions_table}")
 
     def create_graph(self):
         # add node/state for graph
         for state in self.states:
             if state not in self.final_state:
-                self.graph.node(str(state), label=str(state), shape='circle')
+                self.graph.node(str(state), label=str(state), shape='circle', style="filled", fillcolor="pink", color="pink")
             else:
-                self.graph.node(str(state), label=str(state), shape='doublecircle')
+                self.graph.node(str(state), label=str(state), shape='doublecircle', style="filled", fillcolor="lightblue", color="lightblue")
 
         # add start state arrow
         self.graph.node('x', label='start', shape='none')
@@ -112,7 +132,6 @@ class ENFA(FA):
     def __init__(self):
         super().__init__()
         # Initialize an empty dictionary for transitions
-        self.transition_dict = {}
         # Initialize an empty dictionary for epsilon transitions
         self.epsilon_transitions = {}
 
@@ -170,10 +189,14 @@ class ENFA(FA):
 
     def get_next_states(self, state, symbol):
         """Returns the next states for a given state and symbol in the eNFA."""
-        if (state, symbol) in self.transition_dict:
+        try:
             return self.transition_dict[(state, symbol)]
-        else:
+        except KeyError:
             return []
+        # if (state, symbol) in self.transition_dict:
+        #     return self.transition_dict[(state, symbol)]
+        # else:
+        #     return []
 
     def get_epsilon_closure(self, state, visited=None):
         """Returns the epsilon closure of a given state."""

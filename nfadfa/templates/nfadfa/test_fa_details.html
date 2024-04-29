@@ -1,0 +1,75 @@
+{% extends 'nfadfa/layout.html' %}
+{% load static %}
+{% block title %}NFA to DFA Conversion{% endblock %}
+
+{% block body %}
+<section class="conversion-form">
+    <h2>{{ type }} Test</h2>
+    <form method="post" id="fa-test">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <label for="string_test">Test String: </label>
+        <input type="text" name="string_test" id="string_test" value="{{ request.POST.string_test }}" placeholder="01">
+        <button type="submit">Submit</button>
+    </form>
+</section>
+
+{% if accepted != None %}
+    {% if accepted %}
+        <h3>Accepted</h3>
+    {% else %}
+        <h3>Rejected</h3>
+    {% endif %}
+{% endif %}
+
+{% if graph_path %}
+<h2>Results: </h2>
+<section class="result">
+    <div class="graph">
+        <h2>{{ type }} Graph:</h2>
+        <img src="{% static graph_path %}" alt="ENFA Graph">
+    </div>
+    <div class="transition-table">
+        <h2>{{ type }} Transition Table: </h2>
+        <table>
+            {% for row in transition_table %}
+                <tr>
+                    {% if forloop.counter0 == 0 %}
+                        {% for column in row %}
+                            <th> {{ column }} </th>
+                        {% endfor %}
+                    {% else %}
+                        {% for column in row %}
+                            <td> {{ column|join:", " }} </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+{% endif %}
+
+{% if type == 'E-NFA' %}
+<script>
+{#  add epsilon button to transition form #}
+    const transition_form = document.getElementById('id_transitions')
+    const last_p_form = document.querySelector('form p:last-of-type');
+    const epsilon_button = document.createElement('button');
+
+    epsilon_button.innerHTML = 'Add epsilon (ε)';
+    last_p_form.append(epsilon_button);
+
+    epsilon_button.classList.add('epsilon_button');
+
+    epsilon_button.type = 'button';
+
+    epsilon_button.onclick = () => {
+        transition_form.value += "ε";
+    }
+
+</script>
+{% endif %}
+
+
+{% endblock %}

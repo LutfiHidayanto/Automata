@@ -13,71 +13,115 @@
 </section>
 
 {% if graph_path %}
-<section class="graph">
-    <h2>ENFA Graph:</h2>
-    <img src="{% static graph_path.enfa %}" alt="ENFA Graph">
+<h2>Results: </h2>
+<section class="result">
+    <div class="graph">
+        <h2>ENFA Graph:</h2>
+        <img src="{% static graph_path.enfa %}" alt="ENFA Graph">
+    </div>
+    <div class="transition-table">
+        <h2>ENFA Transition Table: </h2>
+        <table>
+            {% for row in enfa_table %}
+                <tr>
+                    {% if forloop.counter0 == 0 %}
+                        {% for column in row %}
+                            <th> {{ column }} </th>
+                        {% endfor %}
+                    {% else %}
+                        {% for column in row %}
+                            <td> {{ column|join:", " }} </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 </section>
-    <section class="graph">
-    <h2>NFA Graph:</h2>
-    <img src="{% static graph_path.nfa %}" alt="NFA Graph">
+<section class="result">
+    <div class-="graph">
+        <h2>NFA Graph:</h2>
+        <img src="{% static graph_path.nfa %}" alt="NFA Graph">
+    </div>
+    <div class="transition_table">
+        <h2>NFA Transition Table:</h2>
+        <table>
+            {% for row in nfa_table %}
+                <tr>
+                    {% if forloop.counter0 == 0 %}
+                        {% for column in row %}
+                            <th> {{ column }} </th>
+                        {% endfor %}
+                    {% else %}
+                        {% for column in row %}
+                            <td> {{ column|join:", " }} </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 </section>
-    <section class="graph">
-    <h2>DFA Graph:</h2>
-    <img src="{% static graph_path.dfa %}" alt="DFA Graph">
+<section class="result">
+    <div class="graph">
+        <h2>DFA Graph:</h2>
+        <img src="{% static graph_path.dfa %}" alt="DFA Graph">
+    </div>
+    <div class="transition-table">
+        <h2>DFA Transition Table:</h2>
+        <table>
+            {% for row in dfa_table %}
+                <tr>
+                    {% if forloop.counter0 == 0 %}
+                        {% for column in row %}
+                            <th> {{ column }} </th>
+                        {% endfor %}
+                    {% else %}
+                        {% for column in row %}
+                            <td> {{ column|join:", " }} </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 </section>
 {% endif %}
 
-{% if nfa %}
-<section class="conversion-result">
-    <h2>Original NFA:</h2>
-    <p>Number of states: {{ nfa.num_states }}</p>
-    <p>States: {% for state in nfa.states %}{{ state }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    <p>Symbols: {{ nfa.symbols }}</p>
-    <p>Number of final states: {{ nfa.num_final_states }}</p>
-    <p>Final states: {{ nfa.final_state }}</p>
-    <p>Start state: {{ nfa.start_state }}</p>
-    <h3>Transition functions:</h3>
-    <ul>
-        {% for transition in nfa.transition_functions %}
-            <li>{{ transition }}</li>
-        {% endfor %}
-    </ul>
-</section>
-{% endif %}
+<script>
+
+{#  add epsilon button to transition form #}
+    const transition_form = document.getElementById('id_transitions')
+    const last_p_form = document.querySelector('form p:last-of-type');
+    const epsilon_button = document.createElement('button');
+
+    epsilon_button.innerHTML = 'Add epsilon (ε)';
+    last_p_form.append(epsilon_button);
+
+    epsilon_button.classList.add('epsilon_button');
+
+    epsilon_button.type = 'button';
+
+    epsilon_button.onclick = () => {
+        transition_form.value += "ε";
+    }
 
 
-{% if nfa %}
-<section class="conversion-result">
-    <h2>Original NFA:</h2>
-    <p>Number of states: {{ nfa.num_states }}</p>
-    <p>States: {% for state in nfa.states %}{{ state }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    <p>Symbols: {{ nfa.symbols }}</p>
-    <p>Number of final states: {{ nfa.num_final_states }}</p>
-    <p>Final states: {{ nfa.final_state }}</p>
-    <p>Start state: {{ nfa.start_state }}</p>
-    <h3>Transition functions:</h3>
-    <ul>
-        {% for transition in nfa.transition_functions %}
-            <li>{{ transition }}</li>
-        {% endfor %}
-    </ul>
-</section>
-{% endif %}
+{# add epsilon button to symbol form #}
 
-{% if dfa %}
-<section class="conversion-result">
-    <h2>Converted DFA:</h2>
-    <p>Number of states: {{ dfa.num_states }}</p>
-    <p>Symbols: {{ dfa.symbols }}</p>
-    <p>Number of final states: {{ dfa.num_final_states }}</p>
-    <p>Final states: {{ dfa.final_state }}</p>
-    <p>Start state: {{ dfa.start_state }}</p>
-    <h3>Transition functions:</h3>
-    <ul>
-        {% for transition in dfa.transition_functions %}
-            <li>{{ transition }}</li>
-        {% endfor %}
-    </ul>
-</section>
-{% endif %}
+    const symbol_form = document.getElementById('id_symbols')
+    const first_p_form = document.querySelector('form p:first-of-type');
+    const epsilon_button_2 = document.createElement('button');
+
+    epsilon_button_2.innerHTML = 'Add epsilon (ε)';
+    first_p_form.append(epsilon_button_2);
+
+    epsilon_button_2.classList.add('epsilon_button');
+    epsilon_button_2.type = 'button';
+    epsilon_button_2.onclick = () => {
+        symbol_form.value += "ε";
+    }
+
+</script>
+
 {% endblock %}

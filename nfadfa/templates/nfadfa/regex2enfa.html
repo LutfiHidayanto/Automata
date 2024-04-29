@@ -1,0 +1,44 @@
+{% extends 'nfadfa/layout.html' %}
+{% load static %}
+{% block title %}Regex to e-nfa Conversion{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Regex to Enfa Converter</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_regex">Enter Regular Expression:</label>
+        {{ form.regex }}
+        <button type="submit">Convert</button>
+    </form>
+</div>
+
+{% if graph_path %}
+<h2>Results: </h2>
+<section class="result">
+    <div class="graph">
+        <h2>ENFA Graph:</h2>
+        <img src="{% static graph_path %}" alt="ENFA Graph">
+    </div>
+    <div class="transition-table">
+        <h2>ENFA Transition Table: </h2>
+        <table>
+            {% for row in transition_table %}
+                <tr>
+                    {% if forloop.counter0 == 0 %}
+                        {% for column in row %}
+                            <th> {{ column }} </th>
+                        {% endfor %}
+                    {% else %}
+                        {% for column in row %}
+                            <td> {{ column }} </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

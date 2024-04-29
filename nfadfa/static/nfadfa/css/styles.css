@@ -6,41 +6,58 @@
 
 * {
     font-family: "Roboto", sans-serif;
+    box-sizing: border-box;
 }
 
 body {
     margin: 0;
     padding: 0;
+    scroll-behavior: smooth;
 }
+
+.default-main {
+    padding: 3rem 6rem;
+}
+
+header {
+    display: flex;
+    background-color: #007bff;
+    height: 5rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+header .logo {
+    height: 5rem;
+}
+
+.logo img {
+    max-height: 100%;
+}
+
 
 nav {
-    background-color: #333;
-    padding: 10px 0;
+    background-color: #007bff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav ul li a {
+nav a {
     color: #fff;
     text-decoration: none;
     font-size: 16px;
-    padding: 10px 20px;
+    padding: 10px 30px;
+    height: inherit;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
 }
 
-nav ul li a:hover {
+nav a:hover {
     background-color: #555;
 }
 
@@ -50,10 +67,9 @@ nav ul li a:hover {
     color: #333;
 }
 
-.hero p {
+.hero p, .hero ol {
     font-size: 18px;
     color: #666;
-    margin-bottom: 40px;
 }
 
 .hero .btn {
@@ -77,11 +93,24 @@ nav ul li a:hover {
     background-color: #0056b3;
 }
 
+#made-by {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 4rem;
+}
+
+.hero-content ol {
+    text-align: justify;
+}
+
 .features {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 50px;
+    height: 90vh;
 }
 
 .feature {
@@ -92,6 +121,10 @@ nav ul li a:hover {
     padding: 30px;
     margin: 20px;
     text-align: center;
+}
+
+.feature a {
+    text-decoration: none;
 }
 
 .feature i {
@@ -108,4 +141,87 @@ nav ul li a:hover {
 .feature p {
     font-size: 16px;
     color: #666;
+}
+
+
+
+/* NFA TO DFA */
+
+label {
+    display: block;
+    margin-bottom: 2rem;
+}
+.result {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.result table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+    min-width: 3rem;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input, textarea {
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    min-width: 50vw;
+}
+
+.epsilon_button {
+    padding: 10px 20px;
+    background-color: #088808;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 50vw;
+}
+
+.conversion-form textarea {
+    display: inline-block;
+    margin-bottom: 0;
+}
+.conversion-form form #add_epsilon {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: fit-content;
 }

@@ -1,0 +1,67 @@
+{% extends 'nfadfa/layout.html' %}
+{% load static %}
+{% block title %}Minimize DFA{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Minimize DFA</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Minimize</button>
+    </form>
+</div>
+
+{% if graph_path %}
+<h2>Results: </h2>
+<section class="result">
+    <div class="graph">
+        <h2>DFA graph before minimized:</h2>
+        <img src="{% static graph_path.before %}" alt="DFA Unminimized">
+    </div>
+{#    <div class="transition-table">#}
+{#        <h2>ENFA Transition Table: </h2>#}
+{#        <table>#}
+{#            {% for row in transition_table %}#}
+{#                <tr>#}
+{#                    {% if forloop.counter0 == 0 %}#}
+{#                        {% for column in row %}#}
+{#                            <th> {{ column }} </th>#}
+{#                        {% endfor %}#}
+{#                    {% else %}#}
+{#                        {% for column in row %}#}
+{#                            <td> {{ column }} </td>#}
+{#                        {% endfor %}#}
+{#                    {% endif %}#}
+{#                </tr>#}
+{#            {% endfor %}#}
+{#        </table>#}
+{#    </div>#}
+</section>
+<section class="result">
+    <div class="graph">
+        <h2>DFA graph after minimized:</h2>
+        <img src="{% static graph_path.after %}" alt="DFA Minimized">
+    </div>
+{#    <div class="transition-table">#}
+{#        <h2>ENFA Transition Table: </h2>#}
+{#        <table>#}
+{#            {% for row in transition_table %}#}
+{#                <tr>#}
+{#                    {% if forloop.counter0 == 0 %}#}
+{#                        {% for column in row %}#}
+{#                            <th> {{ column }} </th>#}
+{#                        {% endfor %}#}
+{#                    {% else %}#}
+{#                        {% for column in row %}#}
+{#                            <td> {{ column }} </td>#}
+{#                        {% endfor %}#}
+{#                    {% endif %}#}
+{#                </tr>#}
+{#            {% endfor %}#}
+{#        </table>#}
+{#    </div>#}
+</section>
+{% endif %}
+
+{% endblock %}
