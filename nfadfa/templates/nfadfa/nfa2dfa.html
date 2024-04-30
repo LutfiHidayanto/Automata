@@ -101,6 +101,9 @@
 {% endif %}
 
 <script>
+{% if error_messages %}
+    alert("{{ error_messages }}");
+{% endif %}
 
 {#  add epsilon button to transition form #}
     const transition_form = document.getElementById('id_transitions')
@@ -135,5 +138,8 @@
     }
 
 </script>
+
+
+
 
 {% endblock %}

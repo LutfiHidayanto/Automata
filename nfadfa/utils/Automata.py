@@ -1,6 +1,5 @@
 from graphviz import Digraph
 import os
-from collections import OrderedDict
 
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 
@@ -27,7 +26,6 @@ class FA:
 
         self.transition_dict = {}
 
-
     def initFa(self, states, start_state, final_state, symbols, transition_functions):
         self.states = states
         self.num_states = len(states)
@@ -36,7 +34,6 @@ class FA:
         self.num_final_states = len(final_state)
         self.symbols = symbols
         self.transition_functions = transition_functions
-
 
     def init_transitions(self):
         for transition in self.transition_functions:
@@ -341,7 +338,6 @@ class DFA(FA):
             numbers_to_original[str(i)] = state
 
         return original_to_numbers, numbers_to_original
-
 
     def convert_from_nfa(self, nfa):
         original_2_numbers, numbers_2_originals = self.encode_decode_states(nfa.states)

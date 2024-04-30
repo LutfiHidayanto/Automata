@@ -102,7 +102,9 @@ def nfa_to_dfa(request):
                 print("DFA")
                 dfa.print_automaton()
             except Exception as e:
-                return HttpResponse("Input Error", status=400)
+                error_messages = "Input Fields Error! Pastikan sesuai format, serta symbol, state, dan transisi sesuai!"
+                return render(request, BASE_DIR + 'nfa2dfa.html', {'form': FiniteAutomatonForm(),
+                                                                   'error_messages': error_messages})
 
     context = {'form': form,
                'enfa': nfa,
