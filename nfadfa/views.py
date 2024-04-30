@@ -301,15 +301,17 @@ def test_fa_details(request, name):
                     fa = TestFa.DFA(states, symbols, start_state, final_states, transition_dict)
                 elif type == 'NFA':
                     fa = TestFa.NFA(states, symbols, start_state, final_states, transition_dict)
+                    print("bruh")
                 else:
                     fa = TestFa.εNFA(states, symbols, start_state, final_states, transition_dict)
-
+                print(fa.transitions)
                 input_string = request.POST['string_test']
                 print(input_string)
+                print(len(input_string))
                 if type == 'E-NFA':
                     accepted = fa.is_accepted(input_string)
                 else:
-                    accepted, prefixes = fa.is_accepted(input_string)
+                    accepted, prefixes = fa.is_accepted(input_string, display=True)
                 print(accepted)
 
 

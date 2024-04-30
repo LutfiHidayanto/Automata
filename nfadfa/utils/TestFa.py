@@ -1,6 +1,4 @@
 """ Class for DFA to ACCEPT or to REJECT """
-
-
 class DFA:
     def __init__(self, states, alphabet, initial_state, final_states, transitions):
         self.states = states
@@ -34,8 +32,6 @@ class DFA:
 
 
 """ Class for NFA to ACCEPT or to REJECT """
-
-
 class NFA:
     def __init__(self, states, alphabet, initial_state, final_states, transitions):
         self.states = states
@@ -76,8 +72,6 @@ class NFA:
 
 
 """ Class for ε-NFA to ACCEPT or to REJECT """
-
-
 class εNFA:
     def __init__(self, states, alphabet, initial_state, final_states, transitions):
         self.states = states
@@ -119,13 +113,11 @@ class εNFA:
 
 
 """ Class for Regular Expression to ACCEPT or to REJECT """
-
-
 class Regex:
     class Type:
         Symbol = 1
         Concat = 2
-        Union = 3
+        Union  = 3
         Kleene = 4
 
     class RegularExpression:
@@ -165,9 +157,9 @@ class Regex:
     def postfix(pattern):
         temp = []
         for i in range(len(pattern)):
-            if i != 0 \
-                    and (pattern[i - 1].isalnum() or pattern[i - 1] == ")" or pattern[i - 1] == "*") \
-                    and (pattern[i].isalnum() or pattern[i] == "("):
+            if i != 0\
+                and (pattern[i-1].isalnum() or pattern[i-1] == ")" or pattern[i-1] == "*")\
+                and (pattern[i].isalnum() or pattern[i] == "("):
                 temp.append(".")
             temp.append(pattern[i])
         pattern = temp
@@ -214,20 +206,20 @@ class Regex:
 
     def evalRegexSymbol(et):
         initial_state = Regex.FiniteAutomataState()
-        final_state = Regex.FiniteAutomataState()
+        final_state   = Regex.FiniteAutomataState()
         initial_state.next_state[et.value] = [final_state]
         return initial_state, final_state
 
     def evalRegexConcat(et):
-        left_nfa = Regex.evalRegex(et.left)
+        left_nfa  = Regex.evalRegex(et.left)
         right_nfa = Regex.evalRegex(et.right)
         left_nfa[1].next_state['$'] = [right_nfa[0]]
         return left_nfa[0], right_nfa[1]
 
     def evalRegexUnion(et):
         initial_state = Regex.FiniteAutomataState()
-        final_state = Regex.FiniteAutomataState()
-        up_nfa = Regex.evalRegex(et.left)
+        final_state   = Regex.FiniteAutomataState()
+        up_nfa   = Regex.evalRegex(et.left)
         down_nfa = Regex.evalRegex(et.right)
         initial_state.next_state['$'] = [up_nfa[0], down_nfa[0]]
         up_nfa[1].next_state['$'] = [final_state]
@@ -236,7 +228,7 @@ class Regex:
 
     def evalRegexKleene(et):
         initial_state = Regex.FiniteAutomataState()
-        final_state = Regex.FiniteAutomataState()
+        final_state   = Regex.FiniteAutomataState()
         sub_nfa = Regex.evalRegex(et.left)
         initial_state.next_state['$'] = [sub_nfa[0], final_state]
         sub_nfa[1].next_state['$'] = [sub_nfa[0], final_state]
@@ -269,10 +261,7 @@ class Regex:
                         stack.append(epsilon_state)
         return closure
 
-
 """ Function to set DFA input """
-
-
 def dfa_setup():
     states_input = input("Enter states (comma-separated): ")
     states = parse_input_states(states_input)
@@ -298,8 +287,6 @@ def dfa_setup():
 
 
 """ Function to set NFA input """
-
-
 def nfa_setup():
     states_input = input("Enter states (comma-separated): ")
     states = parse_input_states(states_input)
@@ -327,8 +314,6 @@ def nfa_setup():
 
 
 """ Function to set εNFA input """
-
-
 def εnfa_setup():
     states_input = input("Enter states (comma-separated): ")
     states = parse_input_states(states_input)
@@ -357,8 +342,6 @@ def εnfa_setup():
 
 
 """ Function to set Regex input """
-
-
 def regex_setup():
     # Validation input Regex
     def validateRegexInput(regex):
@@ -378,25 +361,23 @@ def regex_setup():
         # Inputing Regular Expression
         regex_input = input("Enter Regular Expression: ")
         if validateRegexInput(regex_input):
+            print(regex_input)
             return regex_input
             break
 
 
 """ Function to divide input into several parts with commas as boundaries """
-
-
 def parse_input_states(states_input):
     return states_input.split(',')
 
 
 """ Function for main program """
-
-
 def main():
     while True:
         choice = input("Automaton options :\n1. DFA\n2. NFA\n3. ε-NFA\n4. Regular Expression\nEnter your choice: ")
         if choice == "1":
             dfa = dfa_setup()
+            print(dfa.transitions)
             while True:
                 input_string = input("Enter a string to check (Enter space to exit): ")
                 if input_string == " ":
@@ -454,7 +435,6 @@ def main():
 
         else:
             print("Invalid choice")
-
 
 if __name__ == "__main__":
     main()
