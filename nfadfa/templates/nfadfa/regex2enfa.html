@@ -1,12 +1,13 @@
 {% extends 'nfadfa/layout.html' %}
 {% load static %}
-{% block title %}Regex to e-nfa Conversion{% endblock %}
+{% block title %}RegEx to ε-NFA Conversion{% endblock %}
 
 {% block body %}
 <div class="container">
-    <h1>Regex to Enfa Converter</h1>
+    <h1>RegEx to ε-NFA Converter</h1>
     <form method="post">
         {% csrf_token %}
+        <p>Please Only Use Alphanumeric Characters, '+', '.', '*', '(', and ')'. Also, Don't Forget to Double Check Your Input!</p>
         <label for="id_regex">Enter Regular Expression:</label>
         {{ form.regex }}
         <button type="submit">Convert</button>
@@ -17,11 +18,11 @@
 <h2>Results: </h2>
 <section class="result">
     <div class="graph">
-        <h2>ENFA Graph:</h2>
+        <h2>ε-NFA Graph:</h2>
         <img src="{% static graph_path %}" alt="ENFA Graph">
     </div>
     <div class="transition-table">
-        <h2>ENFA Transition Table: </h2>
+        <h2>ε-NFA Transition Table: </h2>
         <table>
             {% for row in transition_table %}
                 <tr>
