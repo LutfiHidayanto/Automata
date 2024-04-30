@@ -70,6 +70,8 @@ def nfa_to_dfa(request):
                 # convert to nfa
                 nfa = NFA()
                 nfa = enfa.convert_to_nfa()
+
+                print(f"SYmbols {nfa.symbols}")
                 nfa.init_transitions()
                 nfa_table = nfa.create_transition_table()
 
@@ -79,7 +81,7 @@ def nfa_to_dfa(request):
                 graph_path['nfa'] = MEDIA_STATIC_DIR + '/nfa_graph.png'
 
                 print("NFA")
-                # nfa.print_automaton()
+                nfa.print_automaton()
 
                 # convert to dfa
                 non_numeric = False
@@ -88,6 +90,7 @@ def nfa_to_dfa(request):
                         non_numeric = True
 
                 dfa = DFA()
+                print("bruh")
                 dfa.convert_from_nfa(nfa)
                 dfa.init_transitions()
                 dfa_table = dfa.create_transition_table()
@@ -97,7 +100,7 @@ def nfa_to_dfa(request):
                 graph_path['dfa'] = MEDIA_STATIC_DIR + '/dfa_graph.png'
 
                 print("DFA")
-                # dfa.print_automaton()
+                dfa.print_automaton()
             except Exception as e:
                 return HttpResponse("Input Error", status=400)
 

@@ -161,9 +161,9 @@ def create_dfa_graph(dfa, filename):
 
     for state in dfa['states']:
         if state in dfa['accepts']:
-            dot.node(state, shape='doublecircle')
+            dot.node(state, shape='doublecircle', style='filled', fillcolor='lightblue', color='lightblue')
         else:
-            dot.node(state)
+            dot.node(state, style='filled', fillcolor='pink', color='pink')
 
     for (start, symbol), end in dfa['tf'].items():
         dot.edge(start, end, label=symbol)
