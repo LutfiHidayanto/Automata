@@ -23,28 +23,24 @@ Pastikan sistem Anda memiliki hal berikut sebelum menginstal dan menjalankan pro
 
 Setelah Anda menginstal semua requirements, Anda bisa menjalankan program ini dengan langkah-langkah berikut:
 
-1. **Clone Repositori**: Clone repositori program ini ke dalam sistem Anda.
+1. **Clone Repositori**: Clone repositori program ini ke dalam sistem Anda Atau mendownload zip code ini lalu extract.
 
     ```
-    git clone https://github.com/namauser/namarepositori.git
+   git clone https://github.com/LutfiHidayanto/Automata.git
     ```
+   
+![img.png](img.png)
 
-2. **Navigasi ke Direktori**: Pindah ke direktori tempat Anda telah mengkloning repositori.
+2. **Buka Direktori**: Pindah ke direktori tempat Anda mengkloning repositori/mendownload repositori.
 
-    ```
-    cd namarepositori
-    ```
+   ![img_1.png](img_1.png) 
+    Pastikan root directory project adalah seperti gambar di atas (FA dan nfadfa adalah subdirectory)
 
-3. **Migrasi Database**: Lakukan migrasi database dengan menjalankan perintah berikut:
 
-    ```
-    python manage.py migrate
-    ```
-
-4. **Jalankan Server**: Jalankan server Django dengan perintah:
+4. **Jalankan Server**: Jalankan server Django dengan perintah pada terminal:
 
     ```
     python manage.py runserver
     ```
 
-5. **Akses Program**: Buka browser web Anda dan akses `http://localhost:
+5. **Akses Program**: Buka browser web Anda dan akses link yang terdapat pada terminal biasanya http://127.0.0.1:8000/
