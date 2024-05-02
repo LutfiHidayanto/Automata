@@ -198,6 +198,8 @@ def minimize_dfa(request):
     form = FiniteAutomatonForm()
     graph_path = None
     transition_table = None
+    accept_before = None
+    accept_after = None
     if request.method == 'POST':
         transition_dict = None
         form = FiniteAutomatonForm(request.POST)
@@ -208,7 +210,6 @@ def minimize_dfa(request):
             final_states = form.cleaned_data['final_state'].split(' ')
             start_state = str(form.cleaned_data['start_state'])
             transitions_input = form.cleaned_data['transitions'].split('\n')
-
             transition_functions = []
             transition_dict = {}
 
@@ -221,15 +222,26 @@ def minimize_dfa(request):
 
                 transition_dict[(state, symbol)] = next_state
 
-            graph_path = {}
 
             dfa = MinimizeDfa.DFA(states, set(symbols), transition_dict, start_state, set(final_states))
 
+            if graph_path == None:
+                input_string = request.POST['string_test']
+                accept_before = dfa.simulate(input_string)
+
+
+
+            graph_path = {}
             image_path = MEDIA_DIR + '/not_minimized_dfa'
             graph_path['before'] = MEDIA_STATIC_DIR + '/not_minimized_dfa.png'
             MinimizeDfa.visualize_dfa(dfa.states, dfa.alphabet, dfa.transitions, dfa.starting_state, dfa.accepting_states, image_path)
 
+
             dfa.minimize()
+            if 'string_test_after' in request.POST:
+                input_string = request.POST['string_test_after']
+                accept_after = dfa.simulate(input_string)
+
             image_path = MEDIA_DIR + '/minimized_dfa'
             graph_path['after'] = MEDIA_STATIC_DIR + '/minimized_dfa.png'
             print(graph_path['after'])
@@ -238,7 +250,9 @@ def minimize_dfa(request):
     context = {
         'form': form,
         'graph_path': graph_path,
-        'transition_table': transition_table
+        'transition_table': transition_table,
+        'accept_before': accept_before,
+        'accept_after': accept_after
     }
     return render(request, BASE_DIR + '/minimize_dfa.html', context)
 
