@@ -86,8 +86,8 @@ class εNFA:
         stack = list(states)
         while stack:
             state = stack.pop()
-            if ('$', state) in self.transitions:
-                for next_state in self.transitions[('$', state)]:
+            if ('ε', state) in self.transitions:
+                for next_state in self.transitions[('ε', state)]:
                     if next_state not in closure:
                         closure.add(next_state)
                         stack.append(next_state)
@@ -213,7 +213,7 @@ class Regex:
     def evalRegexConcat(et):
         left_nfa  = Regex.evalRegex(et.left)
         right_nfa = Regex.evalRegex(et.right)
-        left_nfa[1].next_state['$'] = [right_nfa[0]]
+        left_nfa[1].next_state['ε'] = [right_nfa[0]]
         return left_nfa[0], right_nfa[1]
 
     def evalRegexUnion(et):
@@ -221,17 +221,17 @@ class Regex:
         final_state   = Regex.FiniteAutomataState()
         up_nfa   = Regex.evalRegex(et.left)
         down_nfa = Regex.evalRegex(et.right)
-        initial_state.next_state['$'] = [up_nfa[0], down_nfa[0]]
-        up_nfa[1].next_state['$'] = [final_state]
-        down_nfa[1].next_state['$'] = [final_state]
+        initial_state.next_state['ε'] = [up_nfa[0], down_nfa[0]]
+        up_nfa[1].next_state['ε'] = [final_state]
+        down_nfa[1].next_state['ε'] = [final_state]
         return initial_state, final_state
 
     def evalRegexKleene(et):
         initial_state = Regex.FiniteAutomataState()
         final_state   = Regex.FiniteAutomataState()
         sub_nfa = Regex.evalRegex(et.left)
-        initial_state.next_state['$'] = [sub_nfa[0], final_state]
-        sub_nfa[1].next_state['$'] = [sub_nfa[0], final_state]
+        initial_state.next_state['ε'] = [sub_nfa[0], final_state]
+        sub_nfa[1].next_state['ε'] = [sub_nfa[0], final_state]
         return initial_state, final_state
 
     # εNFA
@@ -254,8 +254,8 @@ class Regex:
         stack = list(states)
         while stack:
             state = stack.pop()
-            if '$' in state.next_state:
-                for epsilon_state in state.next_state['$']:
+            if 'ε' in state.next_state:
+                for epsilon_state in state.next_state['ε']:
                     if epsilon_state not in closure:
                         closure.add(epsilon_state)
                         stack.append(epsilon_state)
@@ -327,7 +327,7 @@ def εnfa_setup():
     final_states = parse_input_states(final_states_input)
 
     print("Enter transitions in the format 'CurrentState Alphabet NextState'.")
-    print("Use Alphabet '$' for epsilon transition. Enter 'done' to finish:")
+    print("Use Alphabet 'ε' for epsilon transition. Enter 'done' to finish:")
 
     transitions = {}
     while True:

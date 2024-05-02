@@ -301,10 +301,18 @@ def test_fa_details(request, name):
                     state = transition[0]
                     symbol = transition[1]
                     next_state = transition[2]
-                    try:
-                        transition_dict[(state, symbol)].append(next_state)
-                    except KeyError:
-                        transition_dict[(state, symbol)] = [next_state]
+                    if type == 'NFA':
+                        try:
+                            transition_dict[(state, symbol)].append(next_state)
+                        except KeyError:
+                            transition_dict[(state, symbol)] = [next_state]
+                    elif type == 'E-NFA':
+                        try:
+                            transition_dict[(symbol, state)].append(next_state)
+                        except KeyError:
+                            transition_dict[(symbol, state)] = [next_state]
+                    else:
+                        transition_dict[(state, symbol)] = next_state
 
                 print(f"transition_dict: {transition_dict}")
                 fa = None
