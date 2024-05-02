@@ -367,7 +367,6 @@ class DFA(FA):
         nfa_transition_dict = {}
         dfa_transition_dict = {}
 
-        print(f"bruh")
 
         print(number_transition_functions)
 
@@ -382,42 +381,48 @@ class DFA(FA):
             else:
                 nfa_transition_dict[(starting_state, transition_symbol)] = [ending_state]
 
-        self.q.append((self.start_state,))
-
-        print(f"bruh1")
 
         # Convert NFA transitions to DFA transitions
+
+        # Init the start state
+        self.q.append((self.start_state,))
+
         print(f"nfa.symbols {nfa.symbols}")
+        # Create DFA transitions
         for dfa_state in self.q:
             for symbol in nfa.symbols:
+                # If dfa set state only 1 state then just grab the transitions
                 if len(dfa_state) == 1 and (dfa_state[0], symbol) in nfa_transition_dict:
                     dfa_transition_dict[(dfa_state, symbol)] = nfa_transition_dict[(dfa_state[0], symbol)]
 
+                    # Add to queue to be processed
                     if tuple(dfa_transition_dict[(dfa_state, symbol)]) not in self.q:
                         self.q.append(tuple(dfa_transition_dict[(dfa_state, symbol)]))
+                # If dfa set state consist of multiple states
                 else:
                     destinations = []
                     final_destination = []
 
+                    # Iterate through each state
                     for nfa_state in dfa_state:
-                        if (nfa_state, symbol) in nfa_transition_dict and nfa_transition_dict[
-                            (nfa_state, symbol)] not in destinations:
+                        # Make sure the transition of the state exists in nfa transitions and the transitions is not in destination yet
+                        if (nfa_state, symbol) in nfa_transition_dict and nfa_transition_dict[(nfa_state, symbol)] not in destinations:
                             destinations.append(nfa_transition_dict[(nfa_state, symbol)])
-
+                    # If no destination state found
                     if not destinations:
                         final_destination.append(None)
+                    # If destination states found
                     else:
                         for destination in destinations:
                             for value in destination:
                                 if value not in final_destination:
                                     final_destination.append(value)
-
+                    # Add to DFA transition table/dict
                     dfa_transition_dict[(dfa_state, symbol)] = final_destination
-
+                    # If Destination state not yet in queue
                     if tuple(final_destination) not in self.q:
                         self.q.append(tuple(final_destination))
 
-        print(f"bruh2")
 
         # Convert NFA states to DFA states
         for key in dfa_transition_dict:

@@ -288,6 +288,12 @@ def test_fa_details(request, name):
                 start_state = str(form.cleaned_data['start_state'])
                 transitions_input = form.cleaned_data['transitions'].split('\n')
 
+                print(f"states : {states}")
+                print(f"alphabet : {symbols}")
+                print(f"initial state : {start_state}")
+                print(f"final states : {final_states}")
+                print(f"transitions: {transitions_input}")
+
                 transition_dict = {}
 
                 for line in transitions_input:
@@ -295,9 +301,12 @@ def test_fa_details(request, name):
                     state = transition[0]
                     symbol = transition[1]
                     next_state = transition[2]
+                    try:
+                        transition_dict[(state, symbol)].append(next_state)
+                    except KeyError:
+                        transition_dict[(state, symbol)] = [next_state]
 
-                    transition_dict[(state, symbol)] = next_state
-
+                print(f"transition_dict: {transition_dict}")
                 fa = None
                 if type == 'DFA':
                     fa = TestFa.DFA(states, symbols, start_state, final_states, transition_dict)
