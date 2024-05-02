@@ -333,8 +333,6 @@ def test_fa_details(request, name):
                     accepted, prefixes = fa.is_accepted(input_string, display=True)
                 print(accepted)
 
-
-
     context = {'form': form,
                'graph_path': graph_path,
                'transition_table': transition_table,

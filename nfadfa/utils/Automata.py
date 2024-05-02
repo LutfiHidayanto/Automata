@@ -226,7 +226,7 @@ class ENFA(FA):
         return epsilon_closure
 
     def convert_to_nfa(self):
-        symbol_without_epsilon = self.symbols[:-1].copy()
+        # symbol_without_epsilon = self.symbols[:-1].copy()
         """Converts ENFA to NFA."""
         nfa = NFA()
         nfa.symbols = self.symbols.copy()
@@ -238,7 +238,7 @@ class ENFA(FA):
             if symbol == EPSILON:
                 nfa.symbols.remove(EPSILON)
 
-        # Convert transition functions
+        # Add transition except for epsilon
         for transition in self.transition_functions:
             start_state = transition[0]
             symbol = transition[1]
@@ -251,6 +251,7 @@ class ENFA(FA):
         for start_state, end_states in self.epsilon_transitions.items():
             closure = self.get_epsilon_closure(start_state)
             print(f"Closure {start_state}: {closure}")
+            # Check final state
             for state in closure:
                 if state in self.final_state:
                     nfa.final_state.append(start_state)
@@ -261,8 +262,9 @@ class ENFA(FA):
             #             end_state = transition[2]
             #             nfa.transition_functions.append((start_state, symbol, end_state))
 
+            # Add closure transition to the state
             for state in closure:
-                for symbol in symbol_without_epsilon:
+                for symbol in nfa.symbols:
                     next_state = self.get_next_states(state, symbol)
                     if next_state != []:
                         if type(next_state) == list:
@@ -279,6 +281,7 @@ class ENFA(FA):
 
         nfa.num_final_states = len(nfa.final_state)
 
+        # Remove transition duplicate
         unique_transition_functions = []
         for transition in nfa.transition_functions:
             if transition not in unique_transition_functions:
@@ -286,6 +289,7 @@ class ENFA(FA):
 
         nfa.transition_functions = unique_transition_functions
 
+        # Make sure nfa state is from e nfa state
         for state in nfa.states:
             if state not in self.states:
                 nfa.states.remove(state)
@@ -293,6 +297,7 @@ class ENFA(FA):
         nfa.states = sorted(nfa.states)
         nfa.num_states = len(nfa.states)
 
+        # Remove fina state duplicate
         non_duplicated_final = []
         for state in nfa.final_state:
             if state not in non_duplicated_final:
